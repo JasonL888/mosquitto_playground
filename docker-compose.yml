@@ -1,0 +1,13 @@
+version: '3.9'
+services:
+  mosquitto:
+    image: eclipse-mosquitto:2.0.14-openssl
+    container_name: mosquitto
+    hostname: mosquitto
+    volumes:
+      - ${PWD}/config:/mosquitto/config
+      - ${PWD}/data:/mosquitto/data
+      - ${PWD}/log:/mosquitto/log
+      - ${PWD}/cert:/mosquitto/cert
+    ports:
+      - 1883:1883
