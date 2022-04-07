@@ -13,17 +13,17 @@ username = 'mosquitto'
 password = '8UqU9Z'
 
 def connect_mqtt():
-    def on_connect(client, userdata, flags, rc):
+    def on_connect(client, userdata, flags, rc, properties=None):
         if rc == 0:
             print("Connected to MQTT Broker!")
         else:
             print("Failed to connect, return code %d\n", rc)
 
-    client = mqtt_client.Client(client_id)
+    client = mqtt_client.Client(client_id, protocol=mqtt_client.MQTTv5)
     client.tls_set(os.path.dirname(__file__) + '/../cert/localhost.crt')
     client.username_pw_set(username, password)
     client.on_connect = on_connect
-    client.connect(broker, port)
+    client.connect(broker, port, properties=None)
     return client
 
 
