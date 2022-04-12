@@ -3,12 +3,15 @@ import time
 import os.path
 
 from paho.mqtt import client as mqtt_client
+from paho.mqtt.properties import Properties
+from paho.mqtt.packettypes import PacketTypes
 
 broker = 'localhost'
 port = 1883
 topic = "python/mqtt"
 # generate client ID with pub prefix randomly
-client_id = f'python-mqtt-{random.randint(0, 1000)}'
+#client_id = f'python-mqtt-{random.randint(0, 1000)}'
+client_id = ''
 username = 'mosquitto'
 password = '8UqU9Z'
 
@@ -16,6 +19,9 @@ def connect_mqtt():
     def on_connect(client, userdata, flags, rc, properties=None):
         if rc == 0:
             print("Connected to MQTT Broker!")
+            if properties != None:
+                print('properties:%s' % properties.__dict__)
+                print('AssignedClientIdentifier:%s' % properties.AssignedClientIdentifier)
         else:
             print("Failed to connect, return code %d\n", rc)
 
@@ -23,7 +29,10 @@ def connect_mqtt():
     client.tls_set(os.path.dirname(__file__) + '/../cert/localhost.crt')
     client.username_pw_set(username, password)
     client.on_connect = on_connect
-    client.connect(broker, port, properties=None)
+    props = Properties(PacketTypes.CONNECT)
+    props.RequestResponseInformation=1
+    props.UserProperty = ("usp-endpoint-id","xxx-endpoint-id")
+    client.connect(broker, port, properties=props)
     return client
 
 
