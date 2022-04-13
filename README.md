@@ -15,6 +15,11 @@ python3 -m venv ./venv
 pip install paho-mqtt
 ```
 
+  * install asyncio-mqtt (option - if using asyncio version)
+```
+pip install asyncio-mqtt
+```
+
 # Usage
 ## Start Up
 * In the folder with docker-compose.yml,
