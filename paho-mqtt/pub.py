@@ -41,7 +41,9 @@ def publish(client):
     while True:
         time.sleep(1)
         msg = f"messages: {msg_count}"
-        result = client.publish(topic, msg)
+        props = Properties(PacketTypes.PUBLISH)
+        props.ResponseTopic = "usp/controllers/xx-endpoint-id"
+        result = client.publish(topic, msg,properties=props)
         # result: [0, 1]
         status = result[0]
         if status == 0:
