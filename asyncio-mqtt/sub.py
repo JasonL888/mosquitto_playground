@@ -1,5 +1,4 @@
 import random
-import time
 import os.path
 import ssl
 
@@ -14,20 +13,18 @@ broker = 'localhost'
 port = 1883
 topic = "python/mqtt"
 # generate client ID with pub prefix randomly
-#client_id = f'python-mqtt-{random.randint(0, 1000)}'
+#client_id = f'python-mqtt-{random.randint(0, 100)}'
 client_id = ''
 username = 'mosquitto'
 password = '8UqU9Z'
 
-async def publish(client):
-    msg_count = 0
-    while True:
-        time.sleep(1)
-        msg = f"messages: {msg_count}"
-        props = Properties(PacketTypes.PUBLISH)
-        props.ResponseTopic = "usp/controllers/xx-endpoint-id"
-        await client.publish(topic,payload=msg.encode(),properties=props)
-        print(f"Send `{msg}` to topic `{topic}`")
+async def subscribe(client: mqtt_client):
+    async with client.filtered_messages("python/mqtt") as messages:
+        await client.subscribe("python/mqtt")
+        async for msg in messages:
+            print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
+            response_topic = msg.properties.ResponseTopic
+            print('response topic:%s' % response_topic)
 
 
 async def main():
@@ -43,8 +40,7 @@ async def main():
         tls_context=ssl_context,
         protocol=mqtt_client.MQTTv5
         ) as client:
-        await publish(client)
-
+        await subscribe(client)
 
 if __name__ == '__main__':
     asyncio.run(main())
